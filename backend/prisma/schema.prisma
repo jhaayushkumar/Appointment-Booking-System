@@ -6,9 +6,71 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+
+model Patient {
+  id           Int           @id @default(autoincrement())
+  name         String
+  age          Int
+  gender       String
+  phone        String
+  email        String        @unique
+  appointments Appointment[]
+}
+
+model Doctor {
+  id             Int           @id @default(autoincrement())
+  name           String
+  specialization String
+  phone          String
+  email          String        @unique
+  appointments   Appointment[]
+  slots          Slot[]
+}
+
+model Slot {
+  id          Int          @id @default(autoincrement())
+  startTime   DateTime
+  endTime     DateTime
+  doctorId    Int
+  doctor      Doctor       @relation(fields: [doctorId], references: [id])
+  appointment Appointment?
+}
+
+model Appointment {
+  id           Int           @id @default(autoincrement())
+  date         DateTime
+  status       String        @default("Booked")
+  patientId    Int
+  doctorId     Int
+  slotId       Int?          @unique
+  patient      Patient       @relation(fields: [patientId], references: [id])
+  doctor       Doctor        @relation(fields: [doctorId], references: [id])
+  slot         Slot?         @relation(fields: [slotId], references: [id])
+  payment      Payment?
+  cancellation Cancellation?
+}
+
+model Payment {
+  id            Int         @id @default(autoincrement())
+  amount        Float
+  method        String
+  paymentDate   DateTime    @default(now())
+  appointmentId Int         @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model Cancellation {
+  id            Int         @id @default(autoincrement())
+  reason        String
+  cancelledAt   DateTime    @default(now())
+  appointmentId Int         @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
 }
