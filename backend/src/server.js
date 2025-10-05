@@ -9,7 +9,7 @@ async function main() {
       age: 20,
       gender: "Male",
       phone: "9876543210",
-      email: "dm3411@example.com", 
+      email: "dm3000011@example.com", 
     }
   });
 
@@ -19,7 +19,7 @@ async function main() {
       name: "Dr. Sharma",
       specialization: "Cardiology",
       phone: "9112345670",
-      email: "deve2131@example.com", 
+      email: "deve2000000131@example.com", 
     }
   });
 
