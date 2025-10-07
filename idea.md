@@ -41,53 +41,6 @@ It connects **patients**, **doctors**, and **admins** through an intuitive, secu
 
 ---
 
-## 🧩 Database Schema (Rough Draft)
-
-### 🧾 User Table
-| Field | Type | Description |
-|--------|------|-------------|
-| id | INT (PK) | Unique user ID |
-| name | VARCHAR | Full name |
-| email | VARCHAR | Unique email |
-| password | VARCHAR | Hashed password |
-| role | ENUM('admin','doctor','patient') | Defines role |
-
-### 🩺 Doctor Table
-| Field | Type | Description |
-|--------|------|-------------|
-| id | INT (PK) | Doctor ID |
-| user_id | INT (FK) | Linked to User table |
-| specialization | VARCHAR | Field of expertise |
-| availability | JSON | Available time slots |
-
-### 👤 Patient Table
-| Field | Type | Description |
-|--------|------|-------------|
-| id | INT (PK) | Patient ID |
-| user_id | INT (FK) | Linked to User table |
-| age | INT | Age |
-| gender | VARCHAR | Gender |
-
-### 📅 Appointment Table
-| Field | Type | Description |
-|--------|------|-------------|
-| id | INT (PK) | Appointment ID |
-| doctor_id | INT (FK) | Linked to Doctor table |
-| patient_id | INT (FK) | Linked to Patient table |
-| date | DATE | Appointment date |
-| time | TIME | Appointment time |
-| status | ENUM('pending','confirmed','completed') | Appointment status |
-
-### 💊 Prescription Table
-| Field | Type | Description |
-|--------|------|-------------|
-| id | INT (PK) | Prescription ID |
-| appointment_id | INT (FK) | Linked to Appointment table |
-| details | TEXT | Prescription text |
-| file_url | VARCHAR | Optional uploaded file link |
-
----
-
 ## 💻 Tech Stack (Tentative)
 
 | Layer | Technology |
@@ -138,14 +91,67 @@ It connects **patients**, **doctors**, and **admins** through an intuitive, secu
 2. Doctor confirms → `status = confirmed`  
 3. Consultation completes → `status = completed` (Prescription added)
 
-### 6️⃣ Authentication Middleware Example
-```js
-function verifyToken(req, res, next) {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: 'Unauthorized' });
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: 'Forbidden' });
-    req.user = user;
-    next();
-  });
+## 🗄️ Prisma Schema (Database Design)
+
+Below is the **Prisma schema** defining the data models and their relationships:
+
+```prisma
+model Patient {
+  id           Int           @id @default(autoincrement())
+  name         String
+  age          Int
+  gender       String
+  phone        String
+  email        String        @unique
+  appointments Appointment[]
+}
+
+model Doctor {
+  id             Int           @id @default(autoincrement())
+  name           String
+  specialization String
+  phone          String
+  email          String        @unique
+  appointments   Appointment[]
+  slots          Slot[]
+}
+
+model Slot {
+  id          Int          @id @default(autoincrement())
+  startTime   DateTime
+  endTime     DateTime
+  doctorId    Int
+  doctor      Doctor       @relation(fields: [doctorId], references: [id])
+  appointment Appointment?
+}
+
+model Appointment {
+  id           Int           @id @default(autoincrement())
+  date         DateTime
+  status       String        @default("Booked")
+  patientId    Int
+  doctorId     Int
+  slotId       Int?          @unique
+  patient      Patient       @relation(fields: [patientId], references: [id])
+  doctor       Doctor        @relation(fields: [doctorId], references: [id])
+  slot         Slot?         @relation(fields: [slotId], references: [id])
+  payment      Payment?
+  cancellation Cancellation?
+}
+
+model Payment {
+  id            Int         @id @default(autoincrement())
+  amount        Float
+  method        String
+  paymentDate   DateTime    @default(now())
+  appointmentId Int         @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model Cancellation {
+  id            Int         @id @default(autoincrement())
+  reason        String
+  cancelledAt   DateTime    @default(now())
+  appointmentId Int         @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
 }
