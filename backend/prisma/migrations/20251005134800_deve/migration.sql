@@ -63,7 +63,7 @@ CREATE TABLE `Cancellation` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `reason` VARCHAR(191) NOT NULL,
     `cancelledAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `appointmentId` INTEGER NOT NULL,
+    `appointmentId` INTEGER NOT NULL, 
 
     UNIQUE INDEX `Cancellation_appointmentId_key`(`appointmentId`),
     PRIMARY KEY (`id`)

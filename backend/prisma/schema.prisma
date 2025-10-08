@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,7 +19,7 @@ model Patient {
   name         String
   age          Int
   gender       String
-  phone        String
+  phone        String        @unique
   email        String        @unique
   appointments Appointment[]
 }
@@ -29,7 +28,7 @@ model Doctor {
   id             Int           @id @default(autoincrement())
   name           String
   specialization String
-  phone          String
+  phone          String        @unique
   email          String        @unique
   appointments   Appointment[]
   slots          Slot[]
@@ -47,7 +46,7 @@ model Slot {
 model Appointment {
   id           Int           @id @default(autoincrement())
   date         DateTime
-  status       String        @default("Booked")
+  status       AppointmentStatus  @default(PENDING)
   patientId    Int
   doctorId     Int
   slotId       Int?          @unique
@@ -56,6 +55,11 @@ model Appointment {
   slot         Slot?         @relation(fields: [slotId], references: [id])
   payment      Payment?
   cancellation Cancellation?
+}
+
+enum AppointmentStatus {
+  PENDING
+  BOOKED
 }
 
 model Payment {
@@ -74,3 +78,5 @@ model Cancellation {
   appointmentId Int         @unique
   appointment   Appointment @relation(fields: [appointmentId], references: [id])
 }
+
+
