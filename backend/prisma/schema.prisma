@@ -1,12 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,13 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Patient {
   id           Int           @id @default(autoincrement())
   name         String
   age          Int
   gender       String
-  phone        String
+  phone        String        @unique
   email        String        @unique
   appointments Appointment[]
 }
@@ -29,7 +21,7 @@ model Doctor {
   id             Int           @id @default(autoincrement())
   name           String
   specialization String
-  phone          String
+  phone          String        @unique
   email          String        @unique
   appointments   Appointment[]
   slots          Slot[]
@@ -45,17 +37,22 @@ model Slot {
 }
 
 model Appointment {
-  id           Int           @id @default(autoincrement())
+  id           Int               @id @default(autoincrement())
   date         DateTime
-  status       String        @default("Booked")
+  status       AppointmentStatus @default(PENDING)
   patientId    Int
   doctorId     Int
-  slotId       Int?          @unique
-  patient      Patient       @relation(fields: [patientId], references: [id])
-  doctor       Doctor        @relation(fields: [doctorId], references: [id])
-  slot         Slot?         @relation(fields: [slotId], references: [id])
+  slotId       Int?              @unique
+  patient      Patient           @relation(fields: [patientId], references: [id])
+  doctor       Doctor            @relation(fields: [doctorId], references: [id])
+  slot         Slot?             @relation(fields: [slotId], references: [id])
   payment      Payment?
   cancellation Cancellation?
+}
+
+enum AppointmentStatus {
+  PENDING
+  BOOKED
 }
 
 model Payment {
