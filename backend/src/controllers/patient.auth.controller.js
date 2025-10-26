@@ -14,7 +14,7 @@ const signUp = async (req, res) => {
     });
 
     if (existingpatient) {
-      return res.status(409).json({ message: "patient already exists, please login" });
+      return res.status(409).json({ message: "Patient already exists, please login" });
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -30,10 +30,10 @@ const signUp = async (req, res) => {
       },
     });
     
-    return res.status(201).json({ message: "patient registered successfully" });
+    return res.status(201).json({ message: "Patient registered successfully" });
     
   } catch (error) {
-    console.error('SignUp Error:', error);
+    console.error('Patient SignUp Error:', error);
     return res.status(500).json({message: "Something went wrong"});
   }
 };
@@ -50,7 +50,7 @@ const login = async (req, res) => {
     });
 
     if (!patient) {
-      return res.status(404).json({ message: "patient not found, please sign up" });
+      return res.status(404).json({ message: "Patient not found, please sign up" });
     }
 
     const isMatch = await bcrypt.compare(password, patient.password);
@@ -59,8 +59,9 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: patient.id, email: patient.email },
-        process.env.JWT_SECRET,
+    const token = jwt.sign(
+      { id: patient.id, email: patient.email, role: "patient", isPatient: true },
+      process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
@@ -74,7 +75,7 @@ const login = async (req, res) => {
     return res.status(200).json({ message: "Login successful"});
 
   } catch (error) {
-    console.error('Login Error:', error);
+    console.error('Patient Login Error:', error);
     return res.status(500).json({ message: "Something went wrong"});
   }
 };
