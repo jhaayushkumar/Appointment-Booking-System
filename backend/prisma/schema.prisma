@@ -21,9 +21,10 @@ model Patient {
 model Doctor {
   id             Int           @id @default(autoincrement())
   name           String
-  specialization String
+  specialization String        @default("")
   phone          String        @unique
   email          String        @unique
+  password       String
   appointments   Appointment[]
   slots          Slot[]
 }
