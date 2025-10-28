@@ -1,21 +1,13 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Container,
-} from "@mui/material";
+
+import { Box, Typography, Button, Card, CardContent, Grid, Container } from "@mui/material";
 
 
-const Doctors = () => {
-
+const Patients = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h6" gutterBottom>
-        Welcome to your Doctor Portal!
+        Welcome to your Patient Portal!
       </Typography>
 
       <Grid container spacing={3} sx={{ mt: 2 }}>
@@ -26,10 +18,10 @@ const Doctors = () => {
                 Your Information
               </Typography>
               <Typography>
-                You are successfully logged in as a Doctor
+                You are successfully logged in as a Patient
               </Typography>
               <Typography>
-                Manage your appointments and patient records here
+                Access your medical records and appointments here
               </Typography>
             </CardContent>
           </Card>
@@ -47,26 +39,18 @@ const Doctors = () => {
                 fullWidth
                 sx={{ mb: 2 }}
               >
+                Book Appointment
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                sx={{ mb: 2 }}
+              >
                 View Appointments
               </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                sx={{ mb: 2 }}
-              >
-                Manage Schedule
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                sx={{ mb: 2 }}
-              >
-                Patient Records
-              </Button>
               <Button variant="outlined" color="primary" fullWidth>
-                Set Availability
+                Medical History
               </Button>
             </CardContent>
           </Card>
@@ -76,4 +60,4 @@ const Doctors = () => {
   );
 };
 
-export default Doctors;
+export default Patients;
