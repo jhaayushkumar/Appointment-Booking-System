@@ -10,9 +10,14 @@ const patientAuth = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!decoded || (decoded.role !== "patient" && !decoded.isPatient)) {
-      return res.status(403).json({ message: "Access forbidden. Patients only." });
+    if (!decoded) {
+      return res.status(403).json({ message: "Access forbidden." });
     }
+    
+    if (decoded.role !== 'patient') {
+      return res.status(403).json({ message: "Access forbidden. Patient role required." });
+    }
+    
     req.patient = decoded;
     next();
   } catch (error) {
