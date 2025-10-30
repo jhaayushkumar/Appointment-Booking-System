@@ -11,6 +11,8 @@ async function main() {
   await prisma.patient.deleteMany();
 
 
+  const hashedPatientPassword = await bcrypt.hash("password123", 10);
+
   const patient1 = await prisma.patient.create({
     data: {
       name: "John Doe",
@@ -18,7 +20,7 @@ async function main() {
       gender: "Male",
       phone: "9876543210",
       email: "john@example.com",
-      password: "password123", 
+      password: hashedPatientPassword,
     },
   });
 
