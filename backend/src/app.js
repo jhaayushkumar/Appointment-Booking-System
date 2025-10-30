@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const { logger } = require("./middlewares/logger.js");
 const patientRoutes = require("./routes/patient.routes.js");
 const patientAuthRoutes = require("./routes/patient.auth.routes.js");
@@ -12,18 +11,14 @@ dotenv.config();
 const app = express();
 
 // Middlewares
-app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(logger);
 
 // Routes
-app.get("/api/health", (req, res) => {
-  res.json({ message: "OK" });
-});
 app.use("/api/patients", patientRoutes);
 app.use("/api/auth/patient", patientAuthRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/auth/doctor", doctorAuthRoutes);
 
-module.exports = app;
+module.exports = app

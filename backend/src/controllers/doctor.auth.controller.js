@@ -51,21 +51,19 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: doctor.id, name: doctor.name,email: doctor.email, role: "doctor", isDoctor: true },
+      { id: doctor.id, email: doctor.email, role: "doctor", isDoctor: true },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
     );
 
-    return res.status(200).json({ 
-      message: "Login successful",
-      token: token,
-      user: {
-        id: doctor.id,
-        name: doctor.name,
-        email: doctor.email,
-        role: "doctor"
-      }
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
+
+    return res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.error("Doctor Login Error:", error);
     return res.status(500).json({ message: "Something went wrong" });

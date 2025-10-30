@@ -60,27 +60,19 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { 
-        id: patient.id, 
-        name: patient.name,
-        email: patient.email, 
-        role: "patient", 
-        isPatient: true 
-      },
+      { id: patient.id, email: patient.email, role: "patient", isPatient: true },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
-    return res.status(200).json({ 
-      message: "Login successful",
-      token: token,
-      user: {
-        id: patient.id,
-        email: patient.email,
-        name: patient.name,
-        role: "patient"
-      }
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
+
+    return res.status(200).json({ message: "Login successful"});
 
   } catch (error) {
     console.error('Patient Login Error:', error);

@@ -6,18 +6,12 @@ const doctorAuth = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "Access denied. No token provided." });
   }
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!decoded) {
-      return res.status(403).json({ message: "Access forbidden." });
+    if (!decoded || (decoded.role !== "doctor" && !decoded.isDoctor)) {
+      return res.status(403).json({ message: "Access forbidden. Doctors only." });
     }
-    
-    if (decoded.role !== 'doctor') {
-      return res.status(403).json({ message: "Access forbidden. Doctor role required." });
-    }
-    
     req.doctor = decoded;
     next();
   } catch (error) {
