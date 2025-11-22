@@ -92,18 +92,12 @@ const Login = () => {
           : "/api/auth/doctor/login";
       const response = await api.post(endpoint, signin);
 
-      // Store token and user data from response
-      if (response.data?.token) {
-        localStorage.setItem("token", response.data.token);
+      if (response.data?.user) {
         localStorage.setItem("role", role);
+        localStorage.setItem("userName", response.data.user.name);
         
-        // Redirect based on role after successful login
         const redirectPath = role === "patient" ? "/patient/dashboard" : "/doctor/dashboard";
-        
-        // Small delay to ensure token is stored before navigation
-        setTimeout(() => {
-          navigate(redirectPath);
-        }, 100);
+        navigate(redirectPath);
       }
     } catch (err) {
       setError(
@@ -161,17 +155,16 @@ const Login = () => {
 
       const response = await api.post(endpoint, payload);
 
-      // Store token from backend response in localStorage
-      if (response.data?.token) {
-        localStorage.setItem("token", response.data.token);
+      if (response.data?.user) {
+        localStorage.setItem("role", role);
+        localStorage.setItem("userName", response.data.user.name);
       }
 
       setSuccess("Registration successful! Redirecting to dashboard...");
 
-      // Auto-redirect after successful registration
       setTimeout(() => {
         const redirectPath =
-          role === "patient" ? "/patients/dashboard" : "/doctors/dashboard";
+          role === "patient" ? "/patient/dashboard" : "/doctor/dashboard";
         navigate(redirectPath);
       }, 1500);
     } catch (err) {
@@ -184,10 +177,16 @@ const Login = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
-    if (token && role) {
-      navigate(`/${role}/dashboard`);
+    if (role) {
+      api.get(`/api/${role}s/profile`)
+        .then(() => {
+          navigate(`/${role}/dashboard`);
+        })
+        .catch(() => {
+          localStorage.removeItem("role");
+          localStorage.removeItem("userName");
+        });
     }
   }, [navigate]);
 

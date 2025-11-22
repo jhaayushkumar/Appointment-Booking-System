@@ -62,31 +62,30 @@ const Navbar = () => {
         await api.post(`/api/auth/${role}/logout`);
       }
       
-      // Show success message first
+      localStorage.removeItem('role');
+      localStorage.removeItem('userName');
+      
       setSnackbar({
         open: true,
         message: 'Successfully logged out',
         severity: 'success'
       });
       
-      // Wait for the message to be shown to the user
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Clear local storage and navigate
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      localStorage.removeItem('userName');
-      
-      // Navigate to login
+      await new Promise(resolve => setTimeout(resolve, 1000));
       navigate('/login');
       
     } catch (error) {
       console.error('Logout error:', error);
+      localStorage.removeItem('role');
+      localStorage.removeItem('userName');
+      
       setSnackbar({
         open: true,
-        message: 'Error during logout',
-        severity: 'error'
+        message: 'Logged out',
+        severity: 'info'
       });
+      
+      setTimeout(() => navigate('/login'), 1000);
     }
   }, [navigate]);
 

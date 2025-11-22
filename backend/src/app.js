@@ -11,19 +11,17 @@ const doctorAuthRoutes = require("./routes/doctor.auth.routes.js");
 dotenv.config();
 const app = express();
 
-// Middlewares
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(logger);
 
-// Routes
-app.get("/api/health", (req, res) => {
-  res.json({ message: "OK" });
-});
 app.use("/api/patients", patientRoutes);
 app.use("/api/auth/patient", patientAuthRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/auth/doctor", doctorAuthRoutes);
 
-module.exports = app;
+module.exports = app
