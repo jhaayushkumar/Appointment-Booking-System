@@ -16,7 +16,7 @@ const signUp = async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10);
 
-    await prisma.patient.create({
+    const newPatient = await prisma.patient.create({
       data: {
         name,
         email,
@@ -26,8 +26,28 @@ const signUp = async (req, res) => {
         gender,
       },
     });
+
+    const token = jwt.sign(
+      { id: newPatient.id, email: newPatient.email, role: "patient", isPatient: true },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
     
-    return res.status(201).json({ message: "Patient registered successfully" });
+    return res.status(201).json({ 
+      message: "Patient registered successfully",
+      user: {
+        id: newPatient.id,
+        name: newPatient.name,
+        email: newPatient.email
+      }
+    });
   } catch (error) {
     console.error('Patient SignUp Error:', error);
     return res.status(500).json({ message: "Something went wrong" });
@@ -65,7 +85,14 @@ const login = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
-    return res.status(200).json({ message: "Login successful" });
+    return res.status(200).json({ 
+      message: "Login successful",
+      user: {
+        id: patient.id,
+        name: patient.name,
+        email: patient.email
+      }
+    });
   } catch (error) {
     console.error('Patient Login Error:', error);
     return res.status(500).json({ message: "Something went wrong" });
