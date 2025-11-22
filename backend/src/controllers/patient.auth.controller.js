@@ -3,14 +3,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const signUp = async (req, res) => {
-  
   const { name, email, phone, password, age, gender } = req.body;
 
   try {
     const existingpatient = await prisma.patient.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
     });
 
     if (existingpatient) {
@@ -31,22 +28,18 @@ const signUp = async (req, res) => {
     });
     
     return res.status(201).json({ message: "Patient registered successfully" });
-    
   } catch (error) {
     console.error('Patient SignUp Error:', error);
-    return res.status(500).json({message: "Something went wrong"});
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
 const login = async (req, res) => {
-  
   const { email, password } = req.body;
 
   try {
     const patient = await prisma.patient.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
     });
 
     if (!patient) {
@@ -72,11 +65,10 @@ const login = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
-    return res.status(200).json({ message: "Login successful"});
-
+    return res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.error('Patient Login Error:', error);
-    return res.status(500).json({ message: "Something went wrong"});
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -90,4 +82,3 @@ module.exports = {
   login,
   logout
 };
-

@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const signUp = async (req, res) => {
-  const { name, email, phone, password, specialization} = req.body;
+  const { name, email, phone, password, specialization } = req.body;
 
   try {
     const existingDoctor = await prisma.doctor.findUnique({
@@ -46,6 +46,7 @@ const login = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, doctor.password);
+    
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
