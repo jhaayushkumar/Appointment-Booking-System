@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const baseURL = `${import.meta.env.VITE_BACKEND}/api`;
+// Remove trailing slash from backend URL if present
+const backendURL = import.meta.env.VITE_BACKEND?.replace(/\/$/, '') || '';
+const baseURL = `${backendURL}/api`;
 
 export const api = axios.create({
   baseURL,
