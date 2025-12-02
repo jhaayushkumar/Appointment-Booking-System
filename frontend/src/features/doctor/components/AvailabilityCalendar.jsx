@@ -55,9 +55,8 @@ const AvailabilityCalendar = ({ doctorId }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState("week");
   const [open, setOpen] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
+  const [slotDate, setSlotDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -137,11 +136,11 @@ const AvailabilityCalendar = ({ doctorId }) => {
   }, [fetchSlots]);
 
   const handleAddSlot = async () => {
-    const start = mergeDateTime(startDate, startTime);
-    const end = mergeDateTime(endDate, endTime);
+    const start = mergeDateTime(slotDate, startTime);
+    const end = mergeDateTime(slotDate, endTime);
 
     if (!start || !end || end <= start) {
-      toast.error("Please provide a valid start and end time");
+      toast.error("End time must be after start time");
       return;
     }
 
@@ -149,7 +148,7 @@ const AvailabilityCalendar = ({ doctorId }) => {
       await addAvailabilitySlot({ startTime: start, endTime: end, doctorId });
       setOpen(false);
       fetchSlots();
-      toast.success("Slot added");
+      toast.success("Slot added successfully");
     } catch (error) {
       console.error("Failed to add slot", error);
       toast.error("Unable to add slot");
@@ -234,19 +233,14 @@ const AvailabilityCalendar = ({ doctorId }) => {
           </Typography>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>
-              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
-                Start Time
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
               <DatePicker
-                label="Start Date"
-                value={startDate}
-                onChange={setStartDate}
+                label="Date"
+                value={slotDate}
+                onChange={setSlotDate}
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    size: "small"
+                    size: "medium"
                   }
                 }}
               />
@@ -259,25 +253,7 @@ const AvailabilityCalendar = ({ doctorId }) => {
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    size: "small"
-                  }
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
-                End Time
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <DatePicker
-                label="End Date"
-                value={endDate}
-                onChange={setEndDate}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    size: "small"
+                    size: "medium"
                   }
                 }}
               />
@@ -290,7 +266,7 @@ const AvailabilityCalendar = ({ doctorId }) => {
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    size: "small"
+                    size: "medium"
                   }
                 }}
               />
