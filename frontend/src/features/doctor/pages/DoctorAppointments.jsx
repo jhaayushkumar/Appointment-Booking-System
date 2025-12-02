@@ -118,7 +118,7 @@ const DoctorAppointments = () => {
         }}
       >
         <Box>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom fontWeight={600}>
             My Appointments
           </Typography>
           <Typography variant="body2" color="text.secondary">

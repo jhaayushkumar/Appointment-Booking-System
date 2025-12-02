@@ -223,14 +223,32 @@ const AvailabilityCalendar = ({ doctorId }) => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Add Availability Slot</DialogTitle>
+        <DialogTitle>
+          <Typography variant="h6" fontWeight={600}>
+            Add Availability Slot
+          </Typography>
+        </DialogTitle>
         <DialogContent>
+          <Typography variant="body2" color="text.secondary" mb={2}>
+            Create a new time slot for patient appointments
+          </Typography>
           <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
+                Start Time
+              </Typography>
+            </Grid>
             <Grid item xs={12} sm={6}>
               <DatePicker
                 label="Start Date"
                 value={startDate}
                 onChange={setStartDate}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    size: "small"
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -238,13 +256,30 @@ const AvailabilityCalendar = ({ doctorId }) => {
                 label="Start Time"
                 value={startTime}
                 onChange={setStartTime}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    size: "small"
+                  }
+                }}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
+                End Time
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <DatePicker
                 label="End Date"
                 value={endDate}
                 onChange={setEndDate}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    size: "small"
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -252,13 +287,21 @@ const AvailabilityCalendar = ({ doctorId }) => {
                 label="End Time"
                 value={endTime}
                 onChange={setEndTime}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    size: "small"
+                  }
+                }}
               />
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleAddSlot}>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button onClick={() => setOpen(false)} size="large">
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleAddSlot} size="large">
             Save Slot
           </Button>
         </DialogActions>
@@ -270,40 +313,94 @@ const AvailabilityCalendar = ({ doctorId }) => {
           setConfirmDeleteOpen(false);
           setSelectedEvent(null);
         }}
+        maxWidth="sm"
+        fullWidth
       >
-        <DialogTitle>Slot Details</DialogTitle>
+        <DialogTitle>
+          <Typography variant="h6" fontWeight={600}>
+            Slot Details
+          </Typography>
+        </DialogTitle>
         <DialogContent>
           {selectedEvent ? (
-            <Box>
-              <Typography variant="subtitle1" gutterBottom>
-                {selectedEvent.title}
-              </Typography>
-              <Typography variant="body2">
-                Start: {selectedEvent.start.toLocaleString()}
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                End: {selectedEvent.end.toLocaleString()}
-              </Typography>
+            <Box sx={{ pt: 1 }}>
+              <Box
+                sx={{
+                  p: 2,
+                  bgcolor: "background.default",
+                  borderRadius: 1,
+                  mb: 2,
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                  {selectedEvent.title}
+                </Typography>
+                <Stack spacing={1}>
+                  <Typography variant="body2" color="text.secondary">
+                    📅 Start: {selectedEvent.start.toLocaleString("en-US", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    🕐 End: {selectedEvent.end.toLocaleString("en-US", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })}
+                  </Typography>
+                </Stack>
+              </Box>
               {selectedEvent.resource?.appointment?.status === "BOOKED" ? (
-                <Typography color="error">
-                  This slot is booked and cannot be deleted.
-                </Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: "error.light",
+                    borderRadius: 1,
+                    borderLeft: 4,
+                    borderColor: "error.main",
+                  }}
+                >
+                  <Typography variant="body2" fontWeight={600} color="error.dark">
+                    ⚠️ Cannot Delete
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    This slot is booked and cannot be deleted.
+                  </Typography>
+                </Box>
               ) : (
-                <Typography color="text.secondary">
-                  This slot is{" "}
-                  {selectedEvent.resource?.appointment?.status?.toLowerCase()}.
-                  You can delete it.
-                </Typography>
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: "success.light",
+                    borderRadius: 1,
+                    borderLeft: 4,
+                    borderColor: "success.main",
+                  }}
+                >
+                  <Typography variant="body2" fontWeight={600} color="success.dark">
+                    ✓ Available for Deletion
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    This slot is {selectedEvent.resource?.appointment?.status?.toLowerCase() || "available"} and can be deleted.
+                  </Typography>
+                </Box>
               )}
             </Box>
           ) : null}
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
           <Button
             onClick={() => {
               setConfirmDeleteOpen(false);
               setSelectedEvent(null);
             }}
+            size="large"
           >
             Close
           </Button>
@@ -314,6 +411,7 @@ const AvailabilityCalendar = ({ doctorId }) => {
             disabled={Boolean(
               selectedEvent?.resource?.appointment?.status === "BOOKED"
             )}
+            size="large"
           >
             Delete Slot
           </Button>

@@ -123,6 +123,15 @@ const Navbar = () => {
 
                 <Button
                   component={RouterLink}
+                  to="/patient/doctors"
+                  sx={navButtonStyle("/patient/doctors")}
+                  startIcon={<PatientsIcon />}
+                >
+                  Find Doctors
+                </Button>
+
+                <Button
+                  component={RouterLink}
                   to="/patient/appointments"
                   sx={navButtonStyle("/patient/appointments")}
                   startIcon={<CalendarIcon />}

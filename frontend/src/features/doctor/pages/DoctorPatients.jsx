@@ -12,8 +12,14 @@ import {
   TableRow,
   Paper,
   Chip,
+  Avatar,
+  Stack,
+  CircularProgress,
+  Grid,
+  Card,
+  CardContent,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Search, Person, Email, Phone, CalendarMonth } from "@mui/icons-material";
 import { getDoctorPatients } from "../api/doctor.api";
 
 const DoctorPatients = () => {
@@ -42,76 +48,150 @@ const DoctorPatients = () => {
       patient.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) {
-    return <Typography>Loading patients...</Typography>;
-  }
-
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          My Patients
-        </Typography>
+      {/* Header */}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        spacing={2}
+        mb={3}
+      >
+        <Box>
+          <Typography variant="h4" fontWeight={600} gutterBottom>
+            My Patients
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            View and manage your patient list
+          </Typography>
+        </Box>
         <TextField
           variant="outlined"
           size="small"
           placeholder="Search patients..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ minWidth: 300 }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon />
+                <Search />
               </InputAdornment>
             ),
           }}
         />
-      </Box>
+      </Stack>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Patient Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Last Visit</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredPatients.length > 0 ? (
-              filteredPatients.map((patient) => (
-                <TableRow key={patient.id} hover>
-                  <TableCell>{patient.name}</TableCell>
-                  <TableCell>{patient.email}</TableCell>
-                  <TableCell>{patient.phone || "N/A"}</TableCell>
-                  <TableCell>
-                    {patient.lastVisit
-                      ? new Date(patient.lastVisit).toLocaleDateString()
-                      : "N/A"}
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={patient.status || "Active"}
-                      color={
-                        patient.status === "Active" ? "success" : "default"
-                      }
-                      size="small"
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No patients found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {/* Stats */}
+      <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
+        <Stack direction="row" spacing={3} alignItems="center">
+          <Box>
+            <Typography variant="h4" fontWeight={700} color="primary">
+              {patients.length}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Total Patients
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="h4" fontWeight={700} color="success.main">
+              {filteredPatients.length}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Search Results
+            </Typography>
+          </Box>
+        </Stack>
+      </Paper>
+
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="40vh">
+          <CircularProgress />
+        </Box>
+      ) : filteredPatients.length > 0 ? (
+        <Grid container spacing={3}>
+          {filteredPatients.map((patient) => (
+            <Grid item xs={12} sm={6} md={4} key={patient.id}>
+              <Card
+                sx={{
+                  height: "100%",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    boxShadow: 6,
+                  },
+                }}
+              >
+                <CardContent>
+                  <Stack direction="row" spacing={2} mb={2}>
+                    <Avatar
+                      sx={{
+                        bgcolor: "primary.main",
+                        width: 56,
+                        height: 56,
+                      }}
+                    >
+                      {patient.name?.charAt(0) || "P"}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h6" fontWeight={600}>
+                        {patient.name}
+                      </Typography>
+                      <Chip
+                        label={patient.gender || "N/A"}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </Box>
+                  </Stack>
+
+                  <Stack spacing={1.5}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Email fontSize="small" color="action" />
+                      <Typography variant="body2" color="text.secondary">
+                        {patient.email}
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Phone fontSize="small" color="action" />
+                      <Typography variant="body2" color="text.secondary">
+                        {patient.phone || "N/A"}
+                      </Typography>
+                    </Stack>
+                    {patient.age && (
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Person fontSize="small" color="action" />
+                        <Typography variant="body2" color="text.secondary">
+                          Age: {patient.age} years
+                        </Typography>
+                      </Stack>
+                    )}
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <Paper
+          elevation={1}
+          sx={{
+            p: 6,
+            textAlign: "center",
+            bgcolor: "background.default",
+          }}
+        >
+          <Person sx={{ fontSize: 80, color: "text.secondary", mb: 2 }} />
+          <Typography variant="h5" gutterBottom fontWeight={600}>
+            No Patients Found
+          </Typography>
+          <Typography color="text.secondary">
+            {searchTerm
+              ? "Try adjusting your search criteria"
+              : "No patients have booked appointments yet"}
+          </Typography>
+        </Paper>
+      )}
     </Box>
   );
 };
