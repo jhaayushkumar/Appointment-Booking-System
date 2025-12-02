@@ -482,7 +482,7 @@ PUT    /api/appointments/:id     # Update appointment status
 
 ## 📸 Patient Screenshots
 
-### 🏠 DashBoard Page
+### 👤 Patient Dashboard
 <img width="1509" height="858" alt="Screenshot 2025-12-03 at 12 14 27 AM" src="https://github.com/user-attachments/assets/8f275df5-25c5-4538-9e0a-39bfec4b3d65" />
 
 ### 🔐 Login Page
@@ -490,9 +490,6 @@ PUT    /api/appointments/:id     # Update appointment status
 
 ### 🔐 SignUp Page
 <img width="1512" height="857" alt="Screenshot 2025-12-03 at 12 34 44 AM" src="https://github.com/user-attachments/assets/efeda3f1-5f52-41f4-9cc2-e22d0331419f" />
-
-### 👤 Patient Dashboard
-<img width="1509" height="858" alt="Screenshot 2025-12-03 at 12 14 27 AM" src="https://github.com/user-attachments/assets/8f275df5-25c5-4538-9e0a-39bfec4b3d65" />
 
 ### 👤 Patient Appointments Page
 <img width="1508" height="861" alt="Screenshot 2025-12-03 at 12 23 06 AM" src="https://github.com/user-attachments/assets/f9582c40-4ae7-4177-8820-821e1f1934ac" />
