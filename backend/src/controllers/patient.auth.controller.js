@@ -7,12 +7,26 @@ const signUp = async (req, res) => {
   const ageNum = parseInt(age);
 
   try {
+    if (!name || !email || !phone || !password || !age || !gender) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (!/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ message: "Phone number must be 10 digits" });
+    }
+
+    if (isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+      return res.status(400).json({ message: "Invalid age provided" });
+    }
+
     const existingpatient = await prisma.patient.findUnique({
       where: { email },
     });
 
     if (existingpatient) {
-      return res.status(409).json({ message: "Patient already exists, please login" });
+      return res
+        .status(409)
+        .json({ message: "Patient already exists, please login" });
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -29,9 +43,14 @@ const signUp = async (req, res) => {
     });
 
     const token = jwt.sign(
-      { id: newPatient.id, email: newPatient.email, role: "patient", isPatient: true },
+      {
+        id: newPatient.id,
+        email: newPatient.email,
+        role: "patient",
+        isPatient: true,
+      },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
     );
 
     res.cookie("token", token, {
@@ -40,21 +59,22 @@ const signUp = async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
-    
-    return res.status(201).json({ 
+
+    return res.status(201).json({
       message: "Patient registered successfully",
       user: {
         id: newPatient.id,
         name: newPatient.name,
         role: "patient",
-        email: newPatient.email
-      }
+        email: newPatient.email,
+      },
     });
   } catch (error) {
-    console.error('Patient SignUp Error:', error);
+    console.error("Patient SignUp Error:", error);
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
 
 const login = async (req, res) => {
   const { email, password } = req.body;
