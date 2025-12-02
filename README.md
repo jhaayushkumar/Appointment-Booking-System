@@ -520,6 +520,12 @@ PUT    /api/appointments/:id     # Update appointment status
 ### 👨‍⚕️ Doctor Profile Page
 <img width="1512" height="855" alt="Screenshot 2025-12-03 at 12 50 00 AM" src="https://github.com/user-attachments/assets/063da685-f5ee-4339-8f02-b409ffc287eb" />
 
+
+### ScreenRecording 
+![WhatsApp Image 2025-12-03 at 00 45 00](https://github.com/user-attachments/assets/4e15896d-6fca-42ce-a779-bd9776169d25)
+
+
+
 ## 🤝 Contributing
 
 We welcome contributions from all team members! Please follow these guidelines:
