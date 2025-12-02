@@ -1,209 +1,180 @@
-import React, { useState, useCallback } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { api } from '../main';
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Button, 
-  IconButton, 
-  Menu, 
-  MenuItem, 
-  Box,
-  Avatar,
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Snackbar,
-  Alert
-} from '@mui/material';
+import React from "react";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+
 import {
-  Menu as MenuIcon,
-  AccountCircle,
-  Dashboard,
-  Logout,
-  Person,
-  LocalHospital,
-  CalendarToday
-} from '@mui/icons-material';
-import useMediaQuery from '@mui/material/useMediaQuery';
+  Dashboard as DashboardIcon,
+  CalendarToday as CalendarIcon,
+  Schedule as ScheduleIcon,
+  People as PatientsIcon,
+  Person as PersonIcon,
+} from "@mui/icons-material";
+
+import { toast } from "react-hot-toast";
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery('(max-width:900px)');
-  const userRole = localStorage.getItem('role');
-  const userName = localStorage.getItem('userName') || 'User';
-  const userInitial = userName.charAt(0).toUpperCase();
+  const location = useLocation();
 
-  const handleProfileClick = () => {
-    const role = localStorage.getItem('role');
-    if (role) {
-      navigate(`/${role}/profile`);
-    } else {
-      navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logout successful");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Logout failed");
     }
   };
 
+  const goToProfile = () => {
+    navigate(`/${user.role}/profile`);
+  };
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'info'
+  // Reusable active style for nav links
+  const navButtonStyle = (path) => ({
+    color: "white",
+    borderBottom:
+      location.pathname === path ? "3px solid white" : "3px solid transparent",
+    borderRadius: 0,
+    textTransform: "none",
+    "&:hover": {
+      borderBottom: "3px solid white",
+      backgroundColor: "rgba(255,255,255,0.08)",
+    },
   });
 
-  const handleCloseSnackbar = () => {
-    setSnackbar(prev => ({ ...prev, open: false }));
-  };
-
-  const handleLogout = useCallback(async () => {
-    try {
-      const role = localStorage.getItem('role');
-      if (role) {
-        await api.post(`/api/auth/${role}/logout`);
-      }
-      
-      localStorage.removeItem('role');
-      localStorage.removeItem('userName');
-      
-      setSnackbar({
-        open: true,
-        message: 'Successfully logged out',
-        severity: 'success'
-      });
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/login');
-      
-    } catch (error) {
-      console.error('Logout error:', error);
-      localStorage.removeItem('role');
-      localStorage.removeItem('userName');
-      
-      setSnackbar({
-        open: true,
-        message: 'Logged out',
-        severity: 'info'
-      });
-      
-      setTimeout(() => navigate('/login'), 1000);
-    }
-  }, [navigate]);
-
-  // Removed menu components as they're no longer needed
-  // The profile icon will now directly navigate to the profile page
-
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="primary">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2, display: { xs: 'block', md: 'none' } }}
-            onClick={handleProfileClick}
-          >
-            <MenuIcon />
-          </IconButton>
-          
-          <Typography
-            variant="h6"
-            component={RouterLink}
-            to="/"
-            sx={{
-              flexGrow: 1,
-              textDecoration: 'none',
-              color: 'inherit',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}
-          >
-            <LocalHospital />
-            HealthCare
-          </Typography>
+    <AppBar position="static" color="primary">
+      <Toolbar>
+        {/* App Title */}
+        <Typography
+          variant="h6"
+          component={RouterLink}
+          to="/"
+          style={{
+            flexGrow: 1,
+            color: "white",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          Clinic App
+        </Typography>
 
-{isMobile ? (
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              onClick={handleProfileClick}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          ) : (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Button 
-                color="inherit" 
-                component={RouterLink} 
-                to={`/${userRole}/dashboard`}
-                startIcon={<Dashboard />}
-              >
-                Dashboard
-              </Button>
-              
-              {userRole === 'patient' && (
-                <Button 
-                  color="inherit" 
-                  component={RouterLink} 
-                  to="/appointments"
-                  startIcon={<CalendarToday />}
+        {/* USER LOGGED IN */}
+        {user ? (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {/* DOCTOR NAVIGATION */}
+            {user.role === "doctor" && (
+              <>
+                <Button
+                  component={RouterLink}
+                  to="/doctor/dashboard"
+                  sx={navButtonStyle("/doctor/dashboard")}
+                  startIcon={<DashboardIcon />}
+                >
+                  Dashboard
+                </Button>
+
+                <Button
+                  component={RouterLink}
+                  to="/doctor/appointments"
+                  sx={navButtonStyle("/doctor/appointments")}
+                  startIcon={<CalendarIcon />}
                 >
                   Appointments
                 </Button>
-              )}
-              
-              <Button 
-                color="inherit" 
-                onClick={handleLogout}
-                startIcon={<Logout />}
-                sx={{ ml: 1 }}
-              >
-                Logout
-              </Button>
-              <IconButton
-                size="large"
-                edge="end"
-                aria-label="View profile"
-                onClick={handleProfileClick}
-                color="inherit"
-                sx={{ ml: 1, '&:hover': { bgcolor: 'transparent' } }}
-              >
-                <Avatar 
-                  sx={{ 
-                    width: 32, 
-                    height: 32, 
-                    bgcolor: 'secondary.main',
-                    '&:hover': { transform: 'scale(1.05)' } // Subtle hover effect
-                  }}
+
+                <Button
+                  component={RouterLink}
+                  to="/doctor/slots"
+                  sx={navButtonStyle("/doctor/slots")}
+                  startIcon={<ScheduleIcon />}
                 >
-                  {userInitial}
-                </Avatar>
-              </IconButton>
-            </Box>
-          )}
-        </Toolbar>
-      </AppBar>
-      
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity={snackbar.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
+                  Slots
+                </Button>
+
+                <Button
+                  component={RouterLink}
+                  to="/doctor/patients"
+                  sx={navButtonStyle("/doctor/patients")}
+                  startIcon={<PatientsIcon />}
+                >
+                  Patients
+                </Button>
+              </>
+            )}
+
+            {/* PATIENT NAVIGATION */}
+            {user.role === "patient" && (
+              <>
+                <Button
+                  component={RouterLink}
+                  to="/patient/dashboard"
+                  sx={navButtonStyle("/patient/dashboard")}
+                  startIcon={<DashboardIcon />}
+                >
+                  Dashboard
+                </Button>
+
+                <Button
+                  component={RouterLink}
+                  to="/patient/appointments"
+                  sx={navButtonStyle("/patient/appointments")}
+                  startIcon={<CalendarIcon />}
+                >
+                  My Appointments
+                </Button>
+
+                <Button
+                  component={RouterLink}
+                  to="/patient/profile"
+                  sx={navButtonStyle("/patient/profile")}
+                  startIcon={<PersonIcon />}
+                >
+                  Profile
+                </Button>
+              </>
+            )}
+
+            {/* PROFILE BUTTON (doctors only, patients already have one above) */}
+            {user.role === "doctor" && (
+              <Button
+                onClick={goToProfile}
+                sx={navButtonStyle(`/${user.role}/profile`)}
+                startIcon={<PersonIcon />}
+              >
+                Profile
+              </Button>
+            )}
+
+            {/* 🔥 UNIQUE, PROFESSIONAL-LOOKING RED LOGOUT BUTTON */}
+            <Button
+              onClick={handleLogout}
+              sx={{
+                ml: 1,
+                color: "white",
+                textTransform: "none",
+                border: "1px solid white",
+                "&:hover": {
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                },
+              }}
+            >
+              Logout
+            </Button>
+          </Box>
+        ) : (
+          <Button color="inherit" component={RouterLink} to="/login">
+            Login
+          </Button>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 
