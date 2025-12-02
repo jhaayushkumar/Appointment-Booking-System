@@ -260,6 +260,7 @@ npm install
 ```bash
 # In the backend directory
 cd backend
+npm install
 npm run dev
 ```
 The backend server will start on `http://localhost:3000`
@@ -268,6 +269,7 @@ The backend server will start on `http://localhost:3000`
 ```bash
 # In a new terminal, navigate to frontend directory
 cd frontend
+npm install
 npm run dev
 ```
 The frontend application will start on `http://localhost:5173`
@@ -282,15 +284,119 @@ The frontend application will start on `http://localhost:5173`
 #### Backend Production
 ```bash
 cd backend
+npm install
+npx prisma generate
+npx prisma migrate deploy
 npm start
 ```
 
 #### Frontend Production
 ```bash
 cd frontend
+npm install
 npm run build
 npm run preview
 ```
+
+## 🚀 Deployment
+
+### 📦 Frontend Deployment (Vercel)
+
+#### Prerequisites
+- Vercel account
+- GitHub repository connected
+
+#### Steps
+1. **Push your code to GitHub**
+   ```bash
+   git push origin main
+   ```
+
+2. **Deploy to Vercel**
+   - Go to [Vercel Dashboard](https://vercel.com)
+   - Click "New Project"
+   - Import your GitHub repository
+   - Configure:
+     - **Framework Preset**: Vite
+     - **Root Directory**: `frontend`
+     - **Build Command**: `npm run build`
+     - **Output Directory**: `dist`
+   - Add Environment Variable:
+     ```
+     VITE_BACKEND=https://your-backend-url.onrender.com
+     ```
+   - Click "Deploy"
+
+#### Alternative: Vercel CLI
+```bash
+cd frontend
+npm install -g vercel
+vercel login
+vercel --prod
+```
+
+### 🔧 Backend Deployment (Render)
+
+#### Prerequisites
+- Render account
+- MySQL database (PlanetScale, Railway, or Render PostgreSQL)
+
+#### Steps
+1. **Create Web Service on Render**
+   - Go to [Render Dashboard](https://render.com)
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository
+   - Configure:
+     - **Name**: appointment-booking-backend
+     - **Root Directory**: `backend`
+     - **Environment**: Node
+     - **Build Command**: `npm install && npx prisma generate`
+     - **Start Command**: `npm start`
+
+2. **Add Environment Variables**
+   ```env
+   NODE_ENV=production
+   DATABASE_URL=mysql://user:password@host:3306/database
+   JWT_SECRET=your-super-secret-jwt-key
+   JWT_EXPIRES_IN=7d
+   PORT=3000
+   ```
+
+3. **Run Migrations**
+   - After deployment, use Render Shell:
+   ```bash
+   npx prisma migrate deploy
+   npx prisma db seed
+   ```
+
+### 🗄️ Database Options
+
+#### Option 1: PlanetScale (Recommended)
+- Free tier available
+- Serverless MySQL
+- No connection limits
+- [Sign up here](https://planetscale.com)
+
+#### Option 2: Railway
+- Free tier with $5 credit
+- Easy MySQL setup
+- [Sign up here](https://railway.app)
+
+#### Option 3: Render PostgreSQL
+- Free tier available
+- Integrated with Render
+- Update `schema.prisma` to use PostgreSQL
+
+### ✅ Post-Deployment Checklist
+- [ ] Frontend deployed and accessible
+- [ ] Backend deployed and running
+- [ ] Database connected
+- [ ] Environment variables set
+- [ ] Migrations ran successfully
+- [ ] CORS configured for frontend domain
+- [ ] Test login functionality
+- [ ] Test appointment booking
+- [ ] Test all CRUD operations
 
 ## 👤 User Roles
 
