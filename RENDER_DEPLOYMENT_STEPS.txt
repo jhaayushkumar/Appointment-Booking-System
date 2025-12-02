@@ -1,0 +1,127 @@
+🚀 RENDER BACKEND DEPLOYMENT - CRITICAL STEPS
+
+Branch: production-deployment-fix
+Backend URL: https://appointment-booking-system-jcw0.onrender.com
+Frontend URL: https://appointment-booking-system-pi.vercel.app
+
+═══════════════════════════════════════════════════════════════
+
+STEP 1: UPDATE RENDER SERVICE
+═══════════════════════════════════════════════════════════════
+
+1. Go to: https://dashboard.render.com
+2. Login to your account
+3. Find service: "appointment-booking-system"
+4. Click on the service name
+
+═══════════════════════════════════════════════════════════════
+
+STEP 2: CHANGE BRANCH
+═══════════════════════════════════════════════════════════════
+
+1. Click "Settings" tab
+2. Scroll to "Build & Deploy" section
+3. Find "Branch" setting
+4. Change from: feature/ui-improvements-production-ready
+5. Change to: production-deployment-fix
+6. Click "Save Changes"
+
+═══════════════════════════════════════════════════════════════
+
+STEP 3: VERIFY ENVIRONMENT VARIABLES
+═══════════════════════════════════════════════════════════════
+
+Still in Settings, scroll to "Environment Variables"
+Make sure these are set:
+
+NODE_ENV=production
+DATABASE_URL=postgresql://postgres.gjcskugwnpxqqsklobyf:Appointment-Booking-System@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres
+JWT_SECRET=6515a9296b09014605759e7f45889820f8bf7ac9
+JWT_EXPIRES_IN=7d
+PORT=3000
+
+═══════════════════════════════════════════════════════════════
+
+STEP 4: MANUAL DEPLOY
+═══════════════════════════════════════════════════════════════
+
+1. Go back to service dashboard
+2. Click "Manual Deploy" button (top right)
+3. Select "Deploy latest commit"
+4. Click "Deploy"
+5. Wait 2-3 minutes for deployment to complete
+
+═══════════════════════════════════════════════════════════════
+
+STEP 5: CHECK DEPLOYMENT LOGS
+═══════════════════════════════════════════════════════════════
+
+1. Click "Logs" tab
+2. Watch for:
+   ✅ "Build successful"
+   ✅ "Server is running on port 3000"
+   ✅ No error messages
+
+═══════════════════════════════════════════════════════════════
+
+STEP 6: TEST BACKEND
+═══════════════════════════════════════════════════════════════
+
+Open in browser:
+https://appointment-booking-system-jcw0.onrender.com
+
+Should see: Server response (not CORS error)
+
+═══════════════════════════════════════════════════════════════
+
+STEP 7: TEST FRONTEND
+═══════════════════════════════════════════════════════════════
+
+1. Open: https://appointment-booking-system-pi.vercel.app
+2. Open Browser Console (F12)
+3. Try to signup/login
+4. Should work without CORS errors!
+
+═══════════════════════════════════════════════════════════════
+
+✅ WHAT THIS FIXES:
+═══════════════════════════════════════════════════════════════
+
+✅ CORS errors on all Vercel URLs
+✅ Login/Signup functionality
+✅ All API requests
+✅ Preflight request failures
+✅ Preview deployment access
+
+═══════════════════════════════════════════════════════════════
+
+🐛 TROUBLESHOOTING:
+═══════════════════════════════════════════════════════════════
+
+If still getting CORS errors:
+1. Check Render logs for errors
+2. Verify branch is "production-deployment-fix"
+3. Clear browser cache
+4. Try incognito/private window
+5. Check if backend is actually running
+
+If backend won't start:
+1. Check DATABASE_URL is correct
+2. Check all environment variables are set
+3. Look for errors in Render logs
+4. Try "Clear build cache & deploy"
+
+═══════════════════════════════════════════════════════════════
+
+📝 IMPORTANT NOTES:
+═══════════════════════════════════════════════════════════════
+
+- Backend MUST be on branch: production-deployment-fix
+- This branch has the correct CORS configuration
+- Old branch had localhost-only CORS
+- New branch allows all Vercel deployments
+- Changes take 2-3 minutes to deploy
+
+═══════════════════════════════════════════════════════════════
+
+After deployment, everything will work! 🎉
