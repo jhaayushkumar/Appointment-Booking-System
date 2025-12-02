@@ -512,11 +512,7 @@ PUT    /api/appointments/:id     # Update appointment status
 <img width="1511" height="858" alt="Screenshot 2025-12-03 at 12 47 34 AM" src="https://github.com/user-attachments/assets/091f2374-1497-434e-bdf7-b3e4717e0d03" />
 
 ### 👨‍⚕️ Doctor Slot  Page
-<img width="1505" height="856" alt="Sc
-
-
-
-reenshot 2025-12-03 at 12 48 00 AM" src="https://github.com/user-attachments/assets/9a9a2c2e-a2c8-4d2a-8fe1-e20c5187ded1" />
+<img width="1512" height="859" alt="Screenshot 2025-12-03 at 1 26 08 AM" src="https://github.com/user-attachments/assets/f36f550a-de42-4bec-aeb8-0b49ebfe1e66" />
 
 ### 👨‍⚕️ Doctor Patient Details  Page
 <img width="1498" height="858" alt="Screenshot 2025-12-03 at 12 49 09 AM" src="https://github.com/user-attachments/assets/666a8533-238b-4943-b240-cad5558660dc" />
