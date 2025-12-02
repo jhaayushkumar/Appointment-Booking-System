@@ -50,9 +50,11 @@ export const LoginForm = ({ userType, onSuccess }) => {
         return;
       }
 
-      loginRequest(data.user);
+      // Add role to user object if not present
+      const userWithRole = { ...data.user, role: userType };
+      loginRequest(userWithRole);
 
-      onSuccess({ success: true, role: data.user.role, name: data.user.name });
+      onSuccess({ success: true, role: userType, name: data.user.name });
     } catch (err) {
       const message = err.response?.data?.message || "Invalid credentials";
       toast.error(message);

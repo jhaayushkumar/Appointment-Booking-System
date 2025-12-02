@@ -78,7 +78,7 @@ export const RegisterForm = ({ userType, onSuccess }) => {
 
       onSuccess({
         success: true,
-        role: response.user.role,
+        role: userType,
         name: response.user.name,
       });
     } catch (err) {
