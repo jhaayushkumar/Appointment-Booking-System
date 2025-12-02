@@ -1,41 +1,39 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { api } from "../main";
+import { useAuth } from "../hooks/useAuth";
+import { CircularProgress, Box } from "@mui/material";
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const role = localStorage.getItem("role");
+  const { user, isAuthenticated, loading } = useAuth();
 
-  useEffect(() => {
-    const verifyAuth = async () => {
-      if (!role || !allowedRoles.includes(role)) {
-        setIsAuthenticated(false);
-        return;
-      }
-
-      try {
-        await api.get(`/api/${role}s/profile`);
-        setIsAuthenticated(true);
-      } catch (error) {
-        setIsAuthenticated(false);
-        localStorage.removeItem("role");
-        localStorage.removeItem("userName");
-      }
-    };
-
-    verifyAuth();
-  }, [role, allowedRoles]);
-
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // Redirect to login if not authenticated
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: window.location.pathname }}
+        replace
+      />
+    );
   }
 
-  if (!allowedRoles.includes(role)) {
-    return <Navigate to="/unauthorized" replace />;
+  // Check if user has required role
+  if (!allowedRoles.includes(user?.role)) {
+    return <Navigate to={`/${user?.role}/dashboard`} replace />;
   }
 
   return <Outlet />;
