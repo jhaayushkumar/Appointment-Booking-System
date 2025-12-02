@@ -1,6 +1,7 @@
 import React from "react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { api } from "../services/axiosClient";
 
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 
@@ -21,12 +22,20 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      // Call backend logout endpoint
+      const endpoint = user.role === "doctor" ? "/auth/doctor/logout" : "/auth/patient/logout";
+      await api.post(endpoint);
+      
+      // Clear local auth state
+      logout();
+      
       toast.success("Logout successful");
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
-      toast.error("Logout failed");
+      // Even if backend call fails, clear local state
+      logout();
+      navigate("/login");
     }
   };
 

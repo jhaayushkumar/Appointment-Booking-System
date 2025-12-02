@@ -12,17 +12,22 @@ const AuthProvider = ({ children }) => {
     let isMounted = true;
 
     const hydrateProfile = async (role) => {
-      const endpoint =
-        role === "doctor" ? "/doctors/profile" : "/patients/profile";
-      const { data } = await api.get(endpoint);
-      const entity = role === "doctor" ? data?.doctor : data?.patient;
+      try {
+        const endpoint =
+          role === "doctor" ? "/doctors/profile" : "/patients/profile";
+        const { data } = await api.get(endpoint);
+        const entity = role === "doctor" ? data?.doctor : data?.patient;
 
-      if (!entity) {
-        throw new Error("Profile data missing");
+        if (!entity) {
+          throw new Error("Profile data missing");
+        }
+
+        setUser({ ...entity, role });
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error(`Error hydrating ${role} profile:`, error);
+        throw error;
       }
-
-      setUser({ ...entity, role });
-      setIsAuthenticated(true);
     };
 
     const restoreSession = async () => {
@@ -30,7 +35,7 @@ const AuthProvider = ({ children }) => {
         await api.get("/auth/doctor/me");
         await hydrateProfile("doctor");
         return;
-      } catch {
+      } catch (error) {
         // ignore and try patient route
       }
 
@@ -38,7 +43,7 @@ const AuthProvider = ({ children }) => {
         await api.get("/auth/patient/me");
         await hydrateProfile("patient");
         return;
-      } catch {
+      } catch (error) {
         // no valid session
       }
 

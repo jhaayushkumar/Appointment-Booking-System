@@ -4,8 +4,8 @@ const BASE_URL = "/doctors";
 
 // Helper function to handle API errors
 const handleApiError = (error, defaultValue) => {
+  console.error("API Error:", error);
   if (import.meta.env.DEV) {
-    console.error("API Error:", error);
     return defaultValue;
   }
   throw error;
