@@ -27,6 +27,7 @@ const DoctorDashboard = () => {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [stats, setStats] = useState({
     totalAppointments: 0,
     pendingAppointments: 0,
@@ -37,7 +38,17 @@ const DoctorDashboard = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const data = await getDoctorAppointments(user.id);
+        console.log("Doctor Dashboard - User:", user);
+        const data = await getDoctorAppointments();
+        console.log("Fetched appointments:", data);
+        
+        if (!Array.isArray(data)) {
+          console.error("Invalid appointments data:", data);
+          setAppointments([]);
+          setLoading(false);
+          return;
+        }
+
         setAppointments(data);
 
         const pending = data.filter((a) => a.status === "PENDING").length;
@@ -50,8 +61,11 @@ const DoctorDashboard = () => {
           bookedAppointments: booked,
           completedAppointments: completed,
         });
+        setError(null);
       } catch (error) {
         console.error("Error fetching appointments:", error);
+        setError(error.message || "Failed to load dashboard");
+        setAppointments([]);
       } finally {
         setLoading(false);
       }
@@ -59,6 +73,9 @@ const DoctorDashboard = () => {
 
     if (user) {
       fetchAppointments();
+    } else {
+      console.log("No user found, setting loading to false");
+      setLoading(false);
     }
   }, [user]);
 
@@ -97,6 +114,32 @@ const DoctorDashboard = () => {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
         <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="60vh" p={3}>
+        <Typography variant="h6" color="error" gutterBottom>
+          Error Loading Dashboard
+        </Typography>
+        <Typography variant="body2" color="text.secondary" mb={2}>
+          {error}
+        </Typography>
+        <Button variant="contained" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <Typography variant="h6" color="text.secondary">
+          No user data available
+        </Typography>
       </Box>
     );
   }
