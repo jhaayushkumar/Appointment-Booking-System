@@ -168,7 +168,7 @@ A comprehensive digital platform that:
 ### 🗄️ **Database**
 | Technology | Purpose |
 |------------|---------|
-| ![MySQL](https://img.shields.io/badge/MySQL-00000F?logo=mysql&logoColor=white) | Primary Database |
+| ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white) | Primary Database (Supabase) |
 | ![Prisma](https://img.shields.io/badge/Prisma-3982CE?logo=Prisma&logoColor=white) | Database ORM |
 
 ### 🛠️ **Development Tools**
