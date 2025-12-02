@@ -8,6 +8,7 @@ import {
   CircularProgress,
   MenuItem,
   Stack,
+  Chip,
 } from "@mui/material";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../hooks/useAuth";
@@ -119,82 +120,130 @@ const Profile = () => {
   }
 
   return (
-    <Box p={3} maxWidth={640} mx="auto">
-      <Stack direction="row" spacing={2} alignItems="center" mb={3}>
-        <Avatar sx={{ width: 80, height: 80, fontSize: "2rem" }}>
-          {avatarInitial}
-        </Avatar>
-        <Box>
-          <Typography variant="h5">{profile.name || "Your Name"}</Typography>
-          <Typography color="text.secondary">{profile.email}</Typography>
-          <Typography color="text.secondary" variant="body2">
-            {user?.role === "doctor" ? "Doctor" : "Patient"}
-          </Typography>
-        </Box>
-      </Stack>
+    <Box p={3}>
+      <Typography variant="h4" gutterBottom fontWeight={600}>
+        My Profile
+      </Typography>
+      <Typography variant="body2" color="text.secondary" mb={3}>
+        Manage your personal information
+      </Typography>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-      >
-        <TextField
-          label="Full Name"
-          name="name"
-          value={profile.name}
-          onChange={handleChange}
-          fullWidth
-        />
-        <TextField
-          label="Email"
-          name="email"
-          value={profile.email}
-          fullWidth
-          disabled
-        />
-        <TextField
-          label="Phone"
-          name="phone"
-          value={profile.phone}
-          onChange={handleChange}
-          fullWidth
-        />
+      <Box maxWidth={700} mx="auto">
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            p: 3,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 2,
+          }}
+        >
+          {/* Profile Header */}
+          <Stack direction="row" spacing={2} alignItems="center" mb={3}>
+            <Avatar 
+              sx={{ 
+                width: 70, 
+                height: 70, 
+                fontSize: "2rem",
+                bgcolor: "primary.main"
+              }}
+            >
+              {avatarInitial}
+            </Avatar>
+            <Box>
+              <Typography variant="h6" fontWeight={600}>
+                {profile.name || "Your Name"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {profile.email}
+              </Typography>
+              <Chip
+                label={user?.role === "doctor" ? "Doctor" : "Patient"}
+                size="small"
+                color="primary"
+                sx={{ mt: 0.5 }}
+              />
+            </Box>
+          </Stack>
 
-        {isPatient && (
-          <>
+          {/* Form Fields */}
+          <Stack spacing={2}>
             <TextField
-              label="Age"
-              name="age"
-              type="number"
-              value={profile.age}
+              label="Full Name"
+              name="name"
+              value={profile.name}
               onChange={handleChange}
               fullWidth
+              required
+              size="small"
             />
             <TextField
-              label="Gender"
-              name="gender"
-              select
-              value={profile.gender}
+              label="Email"
+              name="email"
+              value={profile.email}
+              fullWidth
+              disabled
+              size="small"
+              helperText="Email cannot be changed"
+            />
+            <TextField
+              label="Phone"
+              name="phone"
+              value={profile.phone}
               onChange={handleChange}
               fullWidth
-            >
-              <MenuItem value="">Select gender</MenuItem>
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
-              <MenuItem value="Other">Other</MenuItem>
-            </TextField>
-          </>
-        )}
+              required
+              size="small"
+            />
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ alignSelf: "flex-start" }}
-          disabled={saving}
-        >
-          {saving ? "Saving..." : "Save Changes"}
-        </Button>
+            {isPatient && (
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Age"
+                  name="age"
+                  type="number"
+                  value={profile.age}
+                  onChange={handleChange}
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Gender"
+                  name="gender"
+                  select
+                  value={profile.gender}
+                  onChange={handleChange}
+                  fullWidth
+                  size="small"
+                >
+                  <MenuItem value="">Select</MenuItem>
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
+                </TextField>
+              </Stack>
+            )}
+
+            <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={saving}
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={() => window.location.reload()}
+                disabled={saving}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </Stack>
+        </Box>
       </Box>
     </Box>
   );

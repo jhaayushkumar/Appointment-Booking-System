@@ -6,6 +6,7 @@ import { useAuth } from "./hooks/useAuth";
 // Features
 import Login from "./features/auth/pages/Login";
 import DoctorDashboard from "./features/doctor/pages/DoctorDashboard";
+import PatientDashboard from "./features/patient/pages/PatientDashboard";
 import PatientDoctors from "./features/patient/pages/PatientDoctors";
 import PatientAppointments from "./features/patient/pages/PatientAppointments";
 import Profile from "./features/profile/pages/Profile";
@@ -18,6 +19,7 @@ import DoctorPatients from "./features/doctor/pages/DoctorPatients";
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const App = () => {
   const { isAuthenticated, user } = useAuth();
@@ -25,7 +27,7 @@ const App = () => {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar />
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <Routes>
           <Route
             path="/login"
@@ -47,7 +49,8 @@ const App = () => {
 
           {/* Patient Routes */}
           <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
-            <Route path="/patient/dashboard" element={<PatientDoctors />} />
+            <Route path="/patient/dashboard" element={<PatientDashboard />} />
+            <Route path="/patient/doctors" element={<PatientDoctors />} />
             <Route
               path="/patient/appointments"
               element={<PatientAppointments />}
@@ -95,6 +98,7 @@ const App = () => {
           />
         </Routes>
       </Box>
+      <Footer />
     </Box>
   );
 };
