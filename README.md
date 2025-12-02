@@ -480,22 +480,48 @@ GET    /api/appointments/:id     # Get specific appointment
 PUT    /api/appointments/:id     # Update appointment status
 ```
 
-## 📸 Screenshots
+## 📸 Patient Screenshots
 
-### 🏠 Landing Page
-![Landing Page](./screenshots/landing-page.png)
+### 🏠 DashBoard Page
+<img width="1509" height="858" alt="Screenshot 2025-12-03 at 12 14 27 AM" src="https://github.com/user-attachments/assets/8f275df5-25c5-4538-9e0a-39bfec4b3d65" />
 
 ### 🔐 Login Page
-![Login Page](./screenshots/login-page.png)
+<img width="1507" height="856" alt="Screenshot 2025-12-03 at 12 16 51 AM" src="https://github.com/user-attachments/assets/1d6806e9-ad41-416e-b30b-ea3041e4e012" />
+
+### 🔐 SignUp Page
+<img width="1512" height="857" alt="Screenshot 2025-12-03 at 12 34 44 AM" src="https://github.com/user-attachments/assets/efeda3f1-5f52-41f4-9cc2-e22d0331419f" />
 
 ### 👤 Patient Dashboard
-![Patient Dashboard](./screenshots/patient-dashboard.png)
+<img width="1509" height="858" alt="Screenshot 2025-12-03 at 12 14 27 AM" src="https://github.com/user-attachments/assets/8f275df5-25c5-4538-9e0a-39bfec4b3d65" />
 
-### 👨‍⚕️ Doctor Dashboard
-![Doctor Dashboard](./screenshots/doctor-dashboard.png)
+### 👤 Patient Appointments Page
+<img width="1508" height="861" alt="Screenshot 2025-12-03 at 12 23 06 AM" src="https://github.com/user-attachments/assets/f9582c40-4ae7-4177-8820-821e1f1934ac" />
 
-### 🧑‍💼 Admin Panel
-![Admin Panel](./screenshots/admin-panel.png)
+### 👤 Find a Doctor Page
+<img width="1511" height="858" alt="Screenshot 2025-12-03 at 12 24 51 AM" src="https://github.com/user-attachments/assets/2f1bc7ea-3dec-43a4-a080-c8ca82f1302e" />
+
+### 👤 Profile Page
+<img width="1511" height="858" alt="Screenshot 2025-12-03 at 12 25 30 AM" src="https://github.com/user-attachments/assets/9736d12c-626a-41d5-b093-ae1f040a57aa" />
+
+
+
+
+## 📸 Doctor Screenshots
+
+### 👨‍⚕️ Doctor Dashboard Page
+<img width="1280" height="728" alt="image" src="https://github.com/user-attachments/assets/671b3dda-ee33-4e08-8fba-1310dd6c1853" />
+
+### 👨‍⚕️ Doctor Appointments  Page
+<img width="1511" height="858" alt="Screenshot 2025-12-03 at 12 47 34 AM" src="https://github.com/user-attachments/assets/091f2374-1497-434e-bdf7-b3e4717e0d03" />
+
+### 👨‍⚕️ Doctor Slot  Page
+<img width="1505" height="856" alt="Screenshot 2025-12-03 at 12 48 00 AM" src="https://github.com/user-attachments/assets/9a9a2c2e-a2c8-4d2a-8fe1-e20c5187ded1" />
+
+### 👨‍⚕️ Doctor Patient Details  Page
+<img width="1498" height="858" alt="Screenshot 2025-12-03 at 12 49 09 AM" src="https://github.com/user-attachments/assets/666a8533-238b-4943-b240-cad5558660dc" />
+
+### 👨‍⚕️ Doctor Profile Page
+<img width="1512" height="855" alt="Screenshot 2025-12-03 at 12 50 00 AM" src="https://github.com/user-attachments/assets/063da685-f5ee-4339-8f02-b409ffc287eb" />
 
 ## 🤝 Contributing
 
