@@ -12,6 +12,25 @@ dist
 dist-ssr
 *.local
 
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build/analysis artifacts
+coverage
+storybook-static
+.turbo
+.cache
+.vite
+
+# OS/editor cruft
+.vs
+.idea
+*.pem
+*.bak
+
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

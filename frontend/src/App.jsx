@@ -1,72 +1,101 @@
 import React from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Box } from "@mui/material";
-import Doctors from "./Pages/Doctors";
-import Patients from "./Pages/Patients";
-import Login from "./Pages/Login";
+import { useAuth } from "./hooks/useAuth";
+
+// Features
+import Login from "./features/auth/pages/Login";
+import DoctorDashboard from "./features/doctor/pages/DoctorDashboard";
+import PatientDoctors from "./features/patient/pages/PatientDoctors";
+import PatientAppointments from "./features/patient/pages/PatientAppointments";
+import Profile from "./features/profile/pages/Profile";
+
+// Doctor Pages
+import DoctorAppointments from "./features/doctor/pages/DoctorAppointments";
+import DoctorSlots from "./features/doctor/pages/DoctorSlots";
+import DoctorPatients from "./features/doctor/pages/DoctorPatients";
+
+// Components
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
-import Profile from "./Pages/Profile";
-
-const Layout = ({ children }) => {
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Navbar />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        {children}
-      </Box>
-    </Box>
-  );
-};
 
 const App = () => {
-  const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
+  const { isAuthenticated, user } = useAuth();
 
   return (
-    <>
-      {!isLoginPage && <Navbar />}
-      <Box sx={{ pt: isLoginPage ? 0 : 8, minHeight: '100vh' }}>
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Navbar />
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={
+              isAuthenticated ? (
+                <Navigate
+                  to={
+                    user?.role === "doctor"
+                      ? "/doctor/dashboard"
+                      : "/patient/dashboard"
+                  }
+                  replace
+                />
+              ) : (
+                <Login />
+              )
+            }
+          />
+
+          {/* Patient Routes */}
           <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
-            <Route 
-              path="/patient/dashboard" 
-              element={
-                  <Patients />
-              } 
+            <Route path="/patient/dashboard" element={<PatientDoctors />} />
+            <Route
+              path="/patient/appointments"
+              element={<PatientAppointments />}
+            />
+            <Route path="/patient/profile" element={<Profile />} />
+            <Route
+              path="/patient"
+              element={<Navigate to="/patient/dashboard" replace />}
             />
           </Route>
 
+          {/* Doctor Routes */}
           <Route element={<ProtectedRoute allowedRoles={["doctor"]} />}>
-            <Route 
-              path="/doctor/dashboard" 
-              element={
-                  <Doctors />
-              } 
+            <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+            <Route
+              path="/doctor/appointments"
+              element={<DoctorAppointments />}
             />
-          </Route>
-          <Route element={<ProtectedRoute allowedRoles={["doctor"]} />}>
-            <Route 
-              path="/doctor/profile" 
-              element={
-                  <Profile/>
-              } 
-            />
-          </Route>
-          <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
-            <Route 
-              path="/patient/profile" 
-              element={
-                  <Profile/>
-              } 
+            <Route path="/doctor/slots" element={<DoctorSlots />} />
+            <Route path="/doctor/patients" element={<DoctorPatients />} />
+            <Route path="/doctor/profile" element={<Profile />} />
+            <Route
+              path="/doctor"
+              element={<Navigate to="/doctor/dashboard" replace />}
             />
           </Route>
 
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* Default redirect */}
+          <Route
+            path="*"
+            element={
+              isAuthenticated ? (
+                <Navigate
+                  to={
+                    user?.role === "doctor"
+                      ? "/doctor/dashboard"
+                      : "/patient/dashboard"
+                  }
+                  replace
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
         </Routes>
       </Box>
-    </>
+    </Box>
   );
 };
 

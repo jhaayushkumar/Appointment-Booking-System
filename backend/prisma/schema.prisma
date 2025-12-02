@@ -55,6 +55,8 @@ model Appointment {
 enum AppointmentStatus {
   PENDING
   BOOKED
+  CANCELLED
+  COMPLETED
 }
 
 model Payment {
