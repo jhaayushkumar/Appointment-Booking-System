@@ -24,7 +24,7 @@ const getMyAppointments = async (req, res) => {
     });
     return res.status(200).json({ appointments });
   } catch (error) {
-    console.error('Get Appointments Error:', error);
+    console.error("Get Appointments Error:", error);
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
@@ -35,7 +35,7 @@ const updateAppointmentStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!['PENDING', 'BOOKED'].includes(status)) {
+    if (!["PENDING", "BOOKED", "CANCELLED", "COMPLETED"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
@@ -51,9 +51,14 @@ const updateAppointmentStatus = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
+    const updateData = { status };
+    if (status === "CANCELLED" && appointment.slotId) {
+      updateData.slotId = null;
+    }
+
     const updatedAppointment = await prisma.appointment.update({
       where: { id: parseInt(id) },
-      data: { status },
+      data: updateData,
       include: {
         patient: {
           select: {

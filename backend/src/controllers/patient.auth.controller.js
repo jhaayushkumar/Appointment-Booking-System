@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const signUp = async (req, res) => {
   const { name, email, phone, password, age, gender } = req.body;
+  const ageNum = parseInt(age);
 
   try {
     const existingpatient = await prisma.patient.findUnique({
@@ -22,7 +23,7 @@ const signUp = async (req, res) => {
         email,
         phone,
         password: hash,
-        age,
+        age: ageNum,
         gender,
       },
     });
@@ -45,6 +46,7 @@ const signUp = async (req, res) => {
       user: {
         id: newPatient.id,
         name: newPatient.name,
+        role: "patient",
         email: newPatient.email
       }
     });
@@ -90,6 +92,7 @@ const login = async (req, res) => {
       user: {
         id: patient.id,
         name: patient.name,
+        role: "patient",
         email: patient.email
       }
     });

@@ -22,7 +22,7 @@ const signUp = async (req, res) => {
         email,
         phone,
         password: hash,
-        ...(specialization ? { specialization } : {})
+        ...(specialization ? { specialization } : {}),
       },
     });
 

@@ -1,5 +1,5 @@
-const express = require('express');
-const doctorAuth = require('../middlewares/doctor.auth.middleware.js');
+const express = require("express");
+const doctorAuth = require("../middlewares/doctor.auth.middleware.js");
 const {
   getMyAppointments,
   updateAppointmentStatus,
@@ -8,7 +8,7 @@ const {
   deleteSlot,
   getMyProfile,
   updateMyProfile,
-  getMyPatients
+  getMyPatients,
 } = require("../controllers/doctor.controller.js");
 
 const router = express.Router();
