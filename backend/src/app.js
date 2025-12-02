@@ -40,9 +40,36 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(logger);
 
+// Health check route
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "ok", 
+    message: "Appointment Booking System API is running",
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "healthy" });
+});
+
 app.use("/api/patients", patientRoutes);
 app.use("/api/auth/patient", patientAuthRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/auth/doctor", doctorAuthRoutes);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ 
+    message: "Internal server error",
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
 
 module.exports = app
