@@ -38,9 +38,7 @@ const DoctorDashboard = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        console.log("Doctor Dashboard - User:", user);
         const data = await getDoctorAppointments();
-        console.log("Fetched appointments:", data);
         
         if (!Array.isArray(data)) {
           console.error("Invalid appointments data:", data);
@@ -74,7 +72,6 @@ const DoctorDashboard = () => {
     if (user) {
       fetchAppointments();
     } else {
-      console.log("No user found, setting loading to false");
       setLoading(false);
     }
   }, [user]);
