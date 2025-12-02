@@ -259,27 +259,6 @@ const DoctorDashboard = () => {
             </Typography>
             <Box flex={1} display="flex" flexDirection="column" justifyContent="center">
               <Grid container spacing={2}>
-                {stats.pendingAppointments > 0 && (
-                  <Grid item xs={12}>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: "warning.light",
-                        borderRadius: 1,
-                        borderLeft: 4,
-                        borderColor: "warning.main",
-                      }}
-                    >
-                      <Typography variant="body2" fontWeight={600} color="warning.dark">
-                        ⚠️ {stats.pendingAppointments} Pending Request
-                        {stats.pendingAppointments !== 1 ? "s" : ""}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Waiting for your confirmation
-                      </Typography>
-                    </Box>
-                  </Grid>
-                )}
                 <Grid item xs={12} sm={6}>
                   <Box
                     sx={{
