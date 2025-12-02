@@ -134,15 +134,23 @@ const cancelAppointment = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
+    // Check if already cancelled
+    if (appointment.status === 'CANCELLED') {
+      return res.status(400).json({ message: "Appointment already cancelled" });
+    }
+
+    // Update appointment status to CANCELLED
+    await prisma.appointment.update({
+      where: { id: parseInt(id) },
+      data: { status: 'CANCELLED' }
+    });
+
+    // Create cancellation record
     await prisma.cancellation.create({
       data: {
         appointmentId: parseInt(id),
         reason: reason || "No reason provided"
       }
-    });
-
-    await prisma.appointment.delete({
-      where: { id: parseInt(id) }
     });
 
     return res.status(200).json({ message: "Appointment cancelled successfully" });
